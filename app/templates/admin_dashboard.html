@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Administrador{% endblock %}
+{% block content %}
+<h1 class="mb-4">Mis empresas</h1>
+{% for c in current_user.companies %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between">
+        <h5>{{ c.name }} <small>{{ c.vat }}</small></h5>
+        <a href="{{ url_for('routes.invite_user', role='user') }}" class="btn btn-sm btn-primary">+ Usuario</a>
+    </div>
+    <div class="card-body">
+        <p>{{ c.expenses|length }} gastos registrados</p>
+        <a href="{{ url_for('routes.upload') }}" class="btn btn-success">Subir ticket</a>
+    </div>
+</div>
+{% endfor %}
+
+<h3>Últimos gastos</h3>
+    <a href="{{ url_for('routes.export_gastos', format='pdf') }}" class="btn btn-outline-success">Exportar PDF</a>
+    <a href="{{ url_for('routes.export_gastos', format='csv') }}" class="btn btn-outline-primary">Exportar CSV</a>
+<table class="table">
+    <thead><tr><th>Fecha</th><th>Usuario</th><th>Proveedor</th><th>Importe</th><th></th></tr></thead>
+    <tbody>
+        {% for e in expenses %}
+        <tr>
+            <td><a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+
+            <td>
+                <form action="{{ url_for('routes.delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar gasto?')">Eliminar</button>
+                </form>
+            </td>{{ e.date or '—' }}</td>
+            <td><a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+
+            <td>
+                <form action="{{ url_for('routes.delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar gasto?')">Eliminar</button>
+                </form>
+            </td>{{ e.creator.name }}</td>
+            <td><a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+
+            <td>
+                <form action="{{ url_for('routes.delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar gasto?')">Eliminar</button>
+                </form>
+            </td>{{ e.company_name or '—' }}</td>
+            <td><a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+
+            <td>
+                <form action="{{ url_for('routes.delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar gasto?')">Eliminar</button>
+                </form>
+            </td>{% if e.amount %}€{{ "%.2f"|format(e.amount) }}{% else %}—{% endif %}</td>
+            <td><a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+
+            <td>
+                <form action="{{ url_for('routes.delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar gasto?')">Eliminar</button>
+                </form>
+            </td><a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

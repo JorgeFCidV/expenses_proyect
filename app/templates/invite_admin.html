@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Invitar administrador - {{ company.name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4>Invitar administrador a {{ company.name }} ({{ company.vat }})</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control", placeholder="Nombre completo") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control", placeholder="email@empresa.com") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.temp_password.label(class="form-label") }}
+                        {{ form.temp_password(class="form-control", placeholder="Contraseña temporal") }}
+                    </div>
+                    {{ form.submit(class="btn btn-success") }}
+                    <a href="{{ url_for('routes.index') }}" class="btn btn-secondary">Cancelar</a>
+                </form>
+                <small class="text-muted mt-3 d-block">
+                    El email con los datos de acceso aparecerá impreso en la terminal del servidor.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

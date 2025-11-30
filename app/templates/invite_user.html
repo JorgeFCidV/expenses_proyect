@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Invitar {{ role }}{% endblock %}
+{% block content %}
+<h1>Invitar {{ "administrador" if role == "admin" else "usuario" }}</h1>
+<form method="POST" class="mt-4">
+    {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">{{ form.name.label }} {{ form.name(class="form-control") }}</div>
+            <div class="mb-3">{{ form.email.label }} {{ form.email(class="form-control") }}</div>
+            <div class="mb-3">{{ form.temp_password.label }} {{ form.temp_password(class="form-control") }}</div>
+            <div class="mb-3">{{ form.company_id.label }} {{ form.company_id(class="form-select") }}</div>
+            {{ form.submit(class="btn btn-success btn-lg") }}
+            <a href="{{ url_for('routes.index') }}" class="btn btn-secondary btn-lg ms-2">Cancelar</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

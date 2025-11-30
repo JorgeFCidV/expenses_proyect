@@ -1,0 +1,26 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Subir Gasto</title>
+</head>
+<body>
+    <h1>Subir Imagen de Gasto (JPG)</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg,.jpeg">
+        <input type="text" name="analytic_account" placeholder="Cuenta Analítica (opcional)">
+        <input type="submit" value="Subir y Procesar">
+    </form>
+    <a href="{{ url_for('list_expenses') }}">Ver Gastos</a>
+</body>
+</html>

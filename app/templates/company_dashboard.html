@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Mis gastos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Mis gastos</h1>
+    <a href="{{ url_for('routes.upload') }}" class="btn btn-success btn-lg">
+        Subir nuevo ticket
+    </a>
+</div>
+
+{% if expenses %}
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Fecha</th>
+            <th>Proveedor</th>
+            <th>Importe</th>
+            <th>Naturaleza</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in expenses %}
+        <tr>
+            <td>{{ e.date|default('—') }}</td>
+            <td>{{ e.company_name|default('—') }}</td>
+            <td>{% if e.amount %}€{{ "%.2f"|format(e.amount) }}{% else %}—{% endif %}</td>
+            <td>{{ e.expense_nature|default('—') }}</td>
+            <td>
+                <a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" 
+                   class="btn btn-sm btn-outline-primary">Editar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="text-center py-5">
+    <p class="text-muted fs-4">Aún no has subido ningún ticket</p>
+    <a href="{{ url_for('routes.upload') }}" class="btn btn-success btn-lg">
+        Subir mi primer ticket
+    </a>
+</div>
+{% endif %}
+{% endblock %}

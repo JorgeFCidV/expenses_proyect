@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Editar gasto{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <h4>Ticket</h4>
+        <div class="border rounded overflow-auto" style="max-height: 70vh; background:#f8f9fa;">
+            <img src="{{ url_for('routes.uploads', filename=expense.image_path) }}" 
+                 class="img-fluid" style="max-width:100%; height:auto;" alt="Ticket">
+        </div>
+        <div class="mt-3">
+            <a href="{{ url_for('routes.index') }}" class="btn btn-secondary">
+                ← Volver al listado
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <h4>Completa los datos del gasto</h4>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">{{ form.nif_iva.label }} {{ form.nif_iva(class="form-control") }}</div>
+            <div class="mb-3">{{ form.company_name.label }} {{ form.company_name(class="form-control") }}</div>
+            <div class="mb-3">{{ form.analytic_account.label }} {{ form.analytic_account(class="form-control") }}</div>
+            <div class="mb-3">{{ form.expense_nature.label }} {{ form.expense_nature(class="form-control") }}</div>
+            <div class="mb-3">{{ form.amount.label }} {{ form.amount(class="form-control") }}</div>
+            <div class="mb-3">{{ form.date.label }} {{ form.date(class="form-control") }}</div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                {{ form.submit(class="btn btn-success btn-lg") }}
+                <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary btn-lg">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

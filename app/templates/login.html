@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Acceso</h3>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">{{ form.email(class="form-control", placeholder="Email") }}</div>
+                    <div class="mb-3">{{ form.password(class="form-control", placeholder="Contraseña") }}</div>
+                    <div class="mb-3 form-check">{{ form.remember() }} {{ form.remember.label }}</div>
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </form>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('routes.reset_request') }}">¿Olvidaste la contraseña?</a>
+                </div>
+            </div>
+        </div>
+        <p class="text-center mt-3 text-muted small">
+            Master → master@gastos.jfcconta.eu / master123
+        </p>
+    </div>
+</div>
+{% endblock %}

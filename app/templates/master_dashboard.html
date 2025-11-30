@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Master - Panel global{% endblock %}
+{% block content %}
+<h1 class="mb-4">Panel del Master</h1>
+<a href="{{ url_for('routes.create_company') }}" class="btn btn-success btn-lg mb-4">+ Crear empresa</a>
+
+<div class="row">
+    <div class="col-xl-7">
+        <h3>Empresas ({{ companies|length }})</h3>
+        {% if companies|length == 0 %}
+            <div class="alert alert-info">Aún no hay empresas creadas</div>
+        {% else %}
+            {% for c in companies %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5>{{ c.name }} <small class="text-muted">{{ c.vat }}</small></h5>
+                            <small>{{ c.users|length }} usuarios • {{ c.expenses|length }} gastos</small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('routes.invite_user', role='admin') }}" class="btn btn-sm btn-primary">+ Admin</a>
+                            <a href="{{ url_for('routes.invite_user', role='user') }}" class="btn btn-sm btn-outline-primary">+ Usuario</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="col-xl-5">
+        <h3>Usuarios del sistema ({{ users|length }})</h3>
+        <div class="list-group">
+            {% for u in users %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <div>
+                        <strong>{{ u.name }}</strong>
+                        <span class="badge bg-{{ 'danger' if u.role=='master' else 'primary' if u.role=='admin' else 'secondary' }} ms-2">
+                            {{ u.role.upper() }}
+                        </span>
+                    </div>
+                    <small class="text-muted">{{ u.email }}</small>
+                </div>
+                <small>
+                    Empresas: {{ u.companies|map(attribute='name')|join(', ') if u.companies else 'Ninguna' }}
+                </small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

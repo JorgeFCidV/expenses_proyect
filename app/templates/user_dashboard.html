@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Mis gastos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h1>Mis gastos ({{ expenses|length }})</h1>
+    <a href="{{ url_for('routes.upload') }}" class="btn btn-success btn-lg">+ Nuevo ticket</a>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Fecha</th>
+            <th>Empresa</th>
+            <th>Proveedor</th>
+            <th>Importe</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in expenses %}
+        <tr>
+            <td>{{ e.date|default('Sin fecha') }}</td>
+            <td>{{ e.company.name }}</td>
+            <td>{{ e.company_name|default('—') }}</td>
+            <td>{% if e.amount %}€{{ "%.2f"|format(e.amount) }}{% else %}—{% endif %}</td>
+            <td>
+                {% if e.amount %}
+                    <span class="badge bg-success">Completo</span>
+                {% else %}
+                    <a href="{{ url_for('routes.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-warning">Completar</a>
+                {% endif %}
+            </td>
+            <td class="text-end">
+                <form action="{{ url_for('routes.delete_expense', expense_id=e.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" 
+                            onclick="return confirm('¿Seguro que quieres eliminar este gasto para siempre?')">
+                        Eliminar
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

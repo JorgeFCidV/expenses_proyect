@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Crear empresa{% endblock %}
+{% block content %}
+<h1>Crear nueva empresa</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.name(class="form-control", placeholder="Nombre de la empresa") }}</div>
+    <div class="mb-3">{{ form.vat(class="form-control", placeholder="NIF/CIF") }}</div>
+    {{ form.submit(class="btn btn-success") }}
+    <a href="{{ url_for('routes.index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
