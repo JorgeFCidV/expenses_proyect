@@ -52,3 +52,18 @@ class AnalyticAccountForm(FlaskForm):
     name = StringField('Nombre cuenta', validators=[DataRequired()])
     is_active = BooleanField('Activa')
     submit = SubmitField('Guardar cuenta')
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Solicitar cambio')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Nueva contraseña', validators=[DataRequired(), Length(8)])
+    password2 = PasswordField('Repetir contraseña', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Cambiar contraseña')
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Contraseña actual', validators=[DataRequired()])
+    new_password = PasswordField('Nueva contraseña', validators=[DataRequired(), Length(8)])
+    new_password2 = PasswordField('Repetir nueva contraseña', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Cambiar contraseña')
