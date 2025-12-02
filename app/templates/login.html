@@ -19,7 +19,7 @@
             </div>
         </div>
         <p class="text-center mt-3 text-muted small">
-            Master → email_master = "master@" + current_app.config["MASTER_EMAIL_DOMAIN"] / master123
+            Master → email_master = {{ "master@" + config["MASTER_EMAIL_DOMAIN"] }} / master123
         </p>
     </div>
 </div>
