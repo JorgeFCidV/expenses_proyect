@@ -40,6 +40,7 @@ def create_app():
         master_email = f"master@{domain}"
 
         # Crear usuario master si no existe
+        master_email = "master@" + app.config.get("MASTER_EMAIL_DOMAIN", "gastos.jfcconta.eu")
         if not User.query.filter_by(email=master_email).first():
             master = User(
                 email=master_email,
@@ -51,7 +52,6 @@ def create_app():
             db.session.add(master)
             db.session.commit()
             print(f"Usuario master creado: {master_email} / master123")
-        
 
         # El master pertenece a TODAS las empresas (incluso las que se creen después)
         master = User.query.filter_by(role='master').first()
