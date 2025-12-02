@@ -28,11 +28,21 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        
+        # Obtener el dominio configurado
+        domain = getattr(app.config, "MASTER_EMAIL_DOMAIN", None)
+        if not domain:
+            domain_url = app.config.get("DOMAIN", "gastos.jfcconta.eu")
+            import re
+            domain_match = re.search(r"https?://([^/]+)", domain_url)
+            domain = domain_match.group(1) if domain_match else "gastos.jfcconta.eu"
+
+        master_email = f"master@{domain}"
 
         # Crear usuario master si no existe
-        if not User.query.filter_by(email='master@gastos.jfcconta.eu').first():
+        if not User.query.filter_by(email=master_email).first():
             master = User(
-                email='master@gastos.jfcconta.eu',
+                email=master_email,
                 name='Master',
                 role='master',
                 is_active=True
@@ -40,7 +50,8 @@ def create_app():
             master.set_password('master123')
             db.session.add(master)
             db.session.commit()
-            print("Usuario master creado: master@gastos.jfcconta.eu / master123")
+            print(f"Usuario master creado: {master_email} / master123")
+        
 
         # El master pertenece a TODAS las empresas (incluso las que se creen después)
         master = User.query.filter_by(role='master').first()
