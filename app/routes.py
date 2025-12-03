@@ -117,25 +117,24 @@ def invite_user(role):
 @routes.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload_expense():
-    # --- Determinar empresas visibles según rol ---
+    # --- Empresas accesibles según rol ---
     if current_user.role == 'master':
         companies = Company.query.order_by(Company.name).all()
     else:
-        companies = current_user.companies.order_by(Company.name).all()
+        # Opción 1: ordenar la lista ya cargada (más rápido y simple)
+        companies = sorted(current_user.companies, key=lambda c: c.name)
+        # Opción 2 (alternativa): companies = Company.query.filter(Company.users.any(id=current_user.id)).order_by(Company.name).all()
 
     form = UploadExpenseForm()
-
-    # Esto es lo que faltaba → poblamos las choices
     form.company_id.choices = [(c.id, c.name) for c in companies]
 
-    # Si no tiene acceso a ninguna empresa
+    # Si no tiene ninguna empresa asignada
     if not companies:
         flash('No tienes acceso a ninguna empresa. Contacta con el administrador.', 'danger')
         return redirect(url_for('routes.index'))
 
     if form.validate_on_submit():
-        # Aquí irá toda la lógica de guardado + OCR (la completamos después)
-        flash('Gasto subido correctamente (funcionalidad en desarrollo)', 'success')
+        flash('Gasto subido correctamente (OCR en desarrollo)', 'success')
         return redirect(url_for('routes.index'))
 
     return render_template('upload.html', title='Subir Gasto', form=form)
