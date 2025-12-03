@@ -134,8 +134,27 @@ def upload_expense():
         return redirect(url_for('routes.index'))
 
     if form.validate_on_submit():
-        flash('Gasto subido correctamente (OCR en desarrollo)', 'success')
-        return redirect(url_for('routes.index'))
+        file = request.files['image']
+        if file and file.filename and file.filename.lower().endswith(('.jpg', '.jpeg')):
+            filename = save_picture(file, folder='uploads')  # Asume utils.py tiene esta fn
+            if filename:
+                # OCR simple (agrega pytesseract si no lo tienes)
+                from app.utils import ocr_process
+                data = ocr_process(filename)
+                expense = Expense(
+                    image_path=f'uploads/{filename}',
+                    amount=data.get('amount', 0.0),
+                    date=data.get('date', datetime.utcnow()),
+                    company_id=form.company_id.data,
+                    user_id=current_user.id,
+                    nif_iva=form.nif_iva.data or data.get('nif'),
+                    # etc.
+                )
+                db.session.add(expense)
+                db.session.commit()
+                flash('Gasto procesado con OCR.', 'success')
+                return redirect(url_for('routes.expenses'))  # A lista de gastos
+        flash('Error en upload: Solo JPG permitidos.', 'danger')
 
     return render_template('upload.html', title='Subir Gasto', form=form)
 
