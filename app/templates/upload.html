@@ -4,21 +4,22 @@
 <h1>Subir nuevo ticket</h1>
 <form method="POST" enctype="multipart/form-data" class="mt-4">
     {{ form.hidden_tag() }}
-    {% if form.company_id.choices and form.company_id.choices|length > 1 %}
+    {% if form.company_id.choices|length > 1 %}
     <div class="mb-3">
         {{ form.company_id.label(class="form-label") }}
-        {{ form.company_id(class="form-select") }}
-    </div>
-    {% elif form.company_id.choices %}
-    <!-- Solo una empresa → la mostramos como texto y enviamos oculta -->
-    <div class="mb-3">
-        <label class="form-label">Empresa</label>
-        <p class="form-control-plaintext">{{ form.company_id.choices[0][1] }}</p>
-        {{ form.company_id(type="hidden") }}
+        {{ form.company_id(class="form-select", **{"aria-describedby": "companyHelp"}) }}
     </div>
     {% else %}
-    <div class="alert alert-warning">No tienes empresas asignadas.</div>
-    {% endif %}
+    <div class="mb-3">
+        <label class="form-label">Empresa</label>
+        <p class="form-control-plaintext fw-bold">
+            {{ form.company_id.choices[0][1] if form.company_id.choices else 'Sin empresa' }}
+        </p>
+        {% if form.company_id.choices %}
+            <input type="hidden" name="company_id" value="{{ form.company_id.choices[0][0] }}">
+        {% endif %}
+    </div>
+    {% endif %}   
     <div class="mb-3">
         {{ form.image.label(class="form-label") }}
         {{ form.image(class="form-control") }}
