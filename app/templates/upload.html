@@ -1,29 +1,52 @@
 {% extends "base.html" %}
-{% block title %}Subir ticket{% endblock %}
+
 {% block content %}
-<h1>Subir nuevo ticket</h1>
-<form method="POST" enctype="multipart/form-data" class="mt-4">
-    {{ form.hidden_tag() }}
-    {% if form.company_id.choices|length > 1 %}
-    <div class="mb-3">
-        {{ form.company_id.label(class="form-label") }}
-        {{ form.company_id(class="form-select", **{"aria-describedby": "companyHelp"}) }}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Subir Nuevo Gasto</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                {{ form.company_id.label(class="form-label") }}
+                {% if form.company_id.choices|length > 1 %}
+                    {{ form.company_id(class="form-select") }}
+                {% else %}
+                    <p class="form-control-plaintext">{{ form.company_id.choices[0][1] if form.company_id.choices else 'Sin empresa' }}</p>
+                    {% if form.company_id.choices %}
+                        <input type="hidden" name="company_id" value="{{ form.company_id.choices[0][0] }}">
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.image.label(class="form-label") }}
+                {{ form.image(class="form-control", accept="image/jpeg") }}
+                <div class="form-text">Solo JPG (captura con cámara en móvil).</div>
+            </div>
+            
+            <div class="mb-3">
+                {{ form.amount(class="form-control") }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.date(class="form-control") }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.nif_iva(class="form-control") }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.company_name(class="form-control") }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.notes(class="form-control", rows=3) }}
+            </div>
+            
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
     </div>
-    {% else %}
-    <div class="mb-3">
-        <label class="form-label">Empresa</label>
-        <p class="form-control-plaintext fw-bold">
-            {{ form.company_id.choices[0][1] if form.company_id.choices else 'Sin empresa' }}
-        </p>
-        {% if form.company_id.choices %}
-            <input type="hidden" name="company_id" value="{{ form.company_id.choices[0][0] }}">
-        {% endif %}
-    </div>
-    {% endif %}   
-    <div class="mb-3">
-        {{ form.image.label(class="form-label") }}
-        {{ form.image(class="form-control") }}
-    </div>
-    {{ form.submit(class="btn btn-success btn-lg") }}
-</form>
+</div>
 {% endblock %}

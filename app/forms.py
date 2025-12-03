@@ -1,69 +1,35 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, FloatField, DateField, SelectField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
+from wtforms import StringField, PasswordField, BooleanField, SelectField, FileField, SubmitField, TextAreaField, FloatField, DateField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, ValidationError
+from flask_wtf.file import FileRequired, FileAllowed
+from app.models import User
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Contraseña', validators=[DataRequired()])
-    remember = BooleanField('Recuérdame')
-    submit = SubmitField('Entrar')
+    remember_me = BooleanField('Recordarme')
+    submit = SubmitField('Iniciar Sesión')
 
-class CreateCompanyForm(FlaskForm):
-    name = StringField('Nombre empresa', validators=[DataRequired()])
-    vat = StringField('NIF/CIF', validators=[DataRequired(), Length(9,20)])
-    submit = SubmitField('Crear empresa')
-
-class InviteUserForm(FlaskForm):
-    name = StringField('Nombre', validators=[DataRequired()])
+class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    temp_password = PasswordField('Contraseña temporal', validators=[DataRequired(), Length(6)])
-    company_id = SelectField('Empresa', coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Invitar')
+    password = PasswordField('Contraseña', validators=[DataRequired(), Length(min=6)])
+    password2 = PasswordField('Repite Contraseña', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Registrar')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Por favor usa un email diferente.')
 
 class UploadExpenseForm(FlaskForm):
-    image = FileField('Foto o PDF del ticket', validators=[DataRequired(), FileAllowed(['jpg','jpeg','png','pdf'])])
-    company_id = SelectField('Empresa', coerce=int, validators=[Optional()])
-    submit = SubmitField('Procesar')
-
-class EditExpenseForm(FlaskForm):
-    nif_iva = StringField('NIF/IVA', validators=[Optional()])
-    company_name = StringField('Proveedor', validators=[Optional()])
-    analytic_account = SelectField('Cuenta analítica', coerce=int, validators=[Optional()])
-    expense_nature = SelectField('Naturaleza del gasto', coerce=int, validators=[Optional()])
-    amount = FloatField('Importe €', validators=[Optional()])
+    company_id = SelectField('Empresa', coerce=int, validators=[DataRequired()])
+    image = FileField('Imagen del Ticket', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'jpeg'], '¡Solo archivos JPG por requisitos legales en España!')
+    ])
+    amount = FloatField('Importe', validators=[Optional()])
     date = DateField('Fecha', validators=[Optional()])
-    ticket_number = StringField('Nº ticket', validators=[Optional()])
-    country = StringField('País', validators=[Optional()])
-    payment_method = SelectField('Forma de pago', coerce=int, validators=[Optional()])
-    submit = SubmitField('Guardar')
-
-class ExpenseCategoryForm(FlaskForm):
-    name = StringField('Nombre categoría', validators=[DataRequired()])
-    is_active = BooleanField('Activa')
-    submit = SubmitField('Guardar categoría')
-
-class PaymentMethodForm(FlaskForm):
-    name = StringField('Nombre método', validators=[DataRequired()])
-    is_active = BooleanField('Activo')
-    submit = SubmitField('Guardar método')
-
-class AnalyticAccountForm(FlaskForm):
-    name = StringField('Nombre cuenta', validators=[DataRequired()])
-    is_active = BooleanField('Activa')
-    submit = SubmitField('Guardar cuenta')
-
-class ResetPasswordRequestForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Solicitar cambio')
-
-class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Nueva contraseña', validators=[DataRequired(), Length(8)])
-    password2 = PasswordField('Repetir contraseña', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Cambiar contraseña')
-
-class ChangePasswordForm(FlaskForm):
-    old_password = PasswordField('Contraseña actual', validators=[DataRequired()])
-    new_password = PasswordField('Nueva contraseña', validators=[DataRequired(), Length(8)])
-    new_password2 = PasswordField('Repetir nueva contraseña', validators=[DataRequired(), EqualTo('new_password')])
-    submit = SubmitField('Cambiar contraseña')
+    nif_iva = StringField('NIF/IVA', validators=[Optional(), Length(max=20)])
+    company_name = StringField('Nombre Empresa', validators=[Optional()])
+    notes = TextAreaField('Notas', validators=[Optional()])
+    submit = SubmitField('Procesar Gasto')

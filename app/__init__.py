@@ -3,68 +3,27 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from config import Config
-import os
 
 db = SQLAlchemy()
-migrate = Migrate() 
-login_manager = LoginManager()
-login_manager.login_view = 'routes.login'
-login_manager.login_message_category = 'info'
+migrate = Migrate()
+login = LoginManager()
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
+
+    # Asegurar carpeta uploads
+    import os
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     db.init_app(app)
     migrate.init_app(app, db)
-    login_manager.init_app(app)
-
-    # Importamos los modelos aquí para evitar import circular
-    from app.models import User, Company
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    login.init_app(app)
 
     from app.routes import routes
     app.register_blueprint(routes)
 
-    with app.app_context():
-        db.create_all()
-        
-        # Obtener el dominio configurado
-        domain = getattr(app.config, "MASTER_EMAIL_DOMAIN", None)
-        if not domain:
-            domain_url = app.config.get("DOMAIN", "gastos.jfcconta.eu")
-            import re
-            domain_match = re.search(r"https?://([^/]+)", domain_url)
-            domain = domain_match.group(1) if domain_match else "gastos.jfcconta.eu"
-
-        master_email = f"master@{domain}"
-
-        # Crear usuario master si no existe
-        master_email = "master@" + app.config.get("MASTER_EMAIL_DOMAIN", "gastos.jfcconta.eu")
-        if not User.query.filter_by(email=master_email).first():
-            master = User(
-                email=master_email,
-                name='Master',
-                role='master',
-                is_active=True
-            )
-            master.set_password('master123')
-            db.session.add(master)
-            db.session.commit()
-            print(f"Usuario master creado: {master_email} / master123")
-
-        # El master pertenece a TODAS las empresas (incluso las que se creen después)
-        master = User.query.filter_by(role='master').first()
-        if master:
-            for company in Company.query.all():
-                if company not in master.companies:
-                    master.companies.append(company)
-            db.session.commit()
-
-        # Crear carpeta uploads
-        os.makedirs(os.path.join(app.root_path, 'static/uploads'), exist_ok=True)
+    login.login_view = 'routes.login'
+    login.login_message = 'Por favor, inicia sesión para acceder a esta página.'
 
     return app
