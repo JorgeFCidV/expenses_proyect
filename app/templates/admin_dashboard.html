@@ -10,14 +10,14 @@
     </div>
     <div class="card-body">
         <p>{{ c.expenses|length }} gastos registrados</p>
-        <a href="{{ url_for('routes.upload') }}" class="btn btn-success">Subir ticket</a>
+        <a href="{{ url_for('routes.upload_expense') }}" class="btn btn-success">Subir ticket</a>
     </div>
 </div>
 {% endfor %}
 
 <h3>Últimos gastos</h3>
-    <a href="{{ url_for('routes.export_gastos', format='pdf') }}" class="btn btn-outline-success">Exportar PDF</a>
-    <a href="{{ url_for('routes.export_gastos', format='csv') }}" class="btn btn-outline-primary">Exportar CSV</a>
+    <a href="{{ url_for('routes.reports', format='pdf') }}" class="btn btn-outline-success">Exportar PDF</a>
+    <a href="{{ url_for('routes.reports', format='csv') }}" class="btn btn-outline-primary">Exportar CSV</a>
 <table class="table">
     <thead><tr><th>Fecha</th><th>Usuario</th><th>Proveedor</th><th>Importe</th><th></th></tr></thead>
     <tbody>

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="d-flex justify-content-between mb-4">
     <h1>Mis gastos ({{ expenses|length }})</h1>
-    <a href="{{ url_for('routes.upload') }}" class="btn btn-success btn-lg">+ Nuevo ticket</a>
+    <a href="{{ url_for('routes.upload_expense') }}" class="btn btn-success btn-lg">+ Nuevo ticket</a>
 </div>
 
 <table class="table table-striped align-middle">

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Mis gastos</h1>
-    <a href="{{ url_for('routes.upload') }}" class="btn btn-success btn-lg">
+    <a href="{{ url_for('routes.upload_expense') }}" class="btn btn-success btn-lg">
         Subir nuevo ticket
     </a>
 </div>
@@ -37,7 +37,7 @@
 {% else %}
 <div class="text-center py-5">
     <p class="text-muted fs-4">Aún no has subido ningún ticket</p>
-    <a href="{{ url_for('routes.upload') }}" class="btn btn-success btn-lg">
+    <a href="{{ url_for('routes.upload_expense') }}" class="btn btn-success btn-lg">
         Subir mi primer ticket
     </a>
 </div>
